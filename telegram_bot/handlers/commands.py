@@ -1,16 +1,29 @@
 import datetime
 import re
 
-import telegram
-from django.core.management.utils import parse_apps_and_model_labels
 from django.utils import timezone
 
-from telegram_bot.handlers import static_text
-from telegram_bot.handlers.keyboard_utils import (make_keyboard_for_start_command,
-                                                  keyboard_confirm_decline_broadcasting)
-from telegram_bot.handlers.utils import handler_logging
-from telegram_bot.models import User
+import telegram
+from manager.config import TG_API_KEY
 from telegram_bot.utils import extract_user_data_from_update
+from telegram_bot.models import User
+from telegram_bot.handlers import static_text
+from telegram_bot.handlers.utils import handler_logging
+from telegram_bot.handlers.keyboard_utils import (make_keyboard_for_task_command,
+                                                  keyboard_confirm_decline_broadcasting)
+
+
+def task(update, context):
+    u = User.get_user(update, context)
+    User.objects.filter(user_id=u.user_id).update(waiting_for_input=True)
+    context.bot.send_message(chat_id=u.user_id, text='Введите описание задачи')
+
+
+def photo(update, context):
+    text_message(update, context)
+    photo = telegram.ChatPhoto(update.message.photo).get_big_file()
+
+    bot.send_photo(chat_id='1021912706', photo=photo.file_id)
 
 
 def text_message(update, context):
@@ -18,46 +31,24 @@ def text_message(update, context):
 
     u = User.get_user(update, context)
     text = update.message.text
-
-    answer = message_answer(text)
-    if answer != '':
-        return update.message.reply_text(answer)
+    answer = static_text.message_answer(text)
 
     if u.waiting_for_input:
         User.objects.filter(user_id=u.user_id).update(waiting_for_input=False)
         bd_task, created = hcmd.task_create(u.user_id, u.username, text)
+        answer_text = static_text.task_text(bd_task)
+        bot.send_message('1021912706', answer_text, parse_mode=telegram.ParseMode.HTML,
+                         reply_markup=make_keyboard_for_task_command(bd_task.task_number))
 
-        reply_text = f'Задача № {bd_task.task_number}' \
-                     f'<pre language="python>">{bd_task.text}</pre> Принята в работу!\n' \
-                     f'При ее завершении будет отправлено уведомление!'
-
-        update.message.reply_text(reply_text, parse_mode=telegram.ParseMode.HTML)
-
-
-def message_answer(question):
-    answers = {'привет': 'Привет солнышко тьмок :*',
-               'спокойной ночи': 'Сладких снов :*', }
-
-    return answers[question.lower()]
+        update.message.reply_text(answer_text, parse_mode=telegram.ParseMode.HTML,
+                                  reply_markup=make_keyboard_for_task_command(bd_task.task_number))
+    elif answer != '':
+        return update.message.reply_text(answer)
 
 
-@handler_logging()
-def command_start(update, context):
-    u, created = User.get_user_and_created(update, context)
-
-    if created:
-        text = static_text.start_created.format(first_name=u.first_name)
-    else:
-        text = static_text.start_not_created.format(first_name=u.first_name)
-
-    update.message.reply_text(text=text + 'kek',
-                              reply_markup=make_keyboard_for_start_command())
-
-
-def task(update, context):
-    u = User.get_user(update, context)
-    User.objects.filter(user_id=u.user_id).update(waiting_for_input=True)
-    context.bot.send_message(chat_id=u.user_id, text='Введите описание задачи')
+def habitica_task_compleeted(task):
+    text = static_text.task_text(task)
+    bot.send_message(task.user_telegram_id, text, parse_mode=telegram.ParseMode.HTML)
 
 
 def stats(update, context):
@@ -106,3 +97,6 @@ def broadcast_command_with_message(update, context):
             text=text_error,
             chat_id=user_id
         )
+
+
+bot = telegram.Bot(TG_API_KEY)

@@ -25,3 +25,28 @@ specify_word_with_error = " You have mistake with the word "
 
 secret_admin_commands = "⚠️ Secret Admin commands\n" \
                         "/stats - bot stats"
+
+def task_text(task):
+    task_text = task.text.split(' # ', maxsplit=1)
+    text = f'Задача № {task.task_number}\n'\
+           f'{task_text[0]}\n<pre language="python>">{task_text[1]}\n</pre>'\
+
+    if task.completed:
+        text += f'завершена!\n'
+    else:
+        text += f'принята в работу.\n' \
+                f'При ее завершении будет отправлено уведомление!\n'
+
+    if task.notes != '':
+        text += f'Комментарий: <pre language="python>">{task.notes}</pre>'
+
+    return text
+
+
+def message_answer(question):
+    answers = {'привет': 'Привет солнышко тьмок :*',
+               'спокойной ночи': 'Сладких снов :*', }
+    if question in answers:
+        return answers[question.lower()]
+    else:
+        return ''
