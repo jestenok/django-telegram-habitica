@@ -2,10 +2,15 @@ import datetime
 import re
 
 from django.utils import timezone
+from django import template
 
-import wdb
+import web_pdb
 
 import telegram
+from mng_habitica.models import Task
+
+from django import template
+
 from manager.config import TG_API_KEY
 from telegram_bot.utils import extract_user_data_from_update
 from telegram_bot.models import User
@@ -16,25 +21,35 @@ from telegram_bot.handlers.keyboard_utils import (make_keyboard_for_task_command
 
 
 def task(update, context):
+    # web_pdb.set_trace()
     u = User.get_user(update, context)
     User.objects.filter(user_id=u.user_id).update(waiting_for_input=True)
     context.bot.send_message(chat_id=u.user_id, text='Введите описание задачи')
 
 
 def tomorrow_tasks(update, context):
-    pass
-    # u = User.get_user(update, context)
-    # User.objects.filter(user_id=u.user_id).update(waiting_for_input=True)
-    # update.message.reply_text(answer_text, parse_mode=telegram.ParseMode.HTML,
-    #                           reply_markup=make_keyboard_for_task_command(bd_task.task_number))
+    tomorrow = datetime.date.today() + datetime.timedelta(days=-1)
+    delimiter = '\n\n' #-----------------------------------------------------------------------------------------------\n'
+    answer_text = f'Список задач за вчерашний день:'
+    tasks = Task.objects.all().filter(date__contains=tomorrow)
+    for t in tasks:
+        if t.completed:
+            compleeted = '✅'
+        else:
+            compleeted = '❌'
+        text = t.text.replace(' # ', f'\n{compleeted} ')
+        answer_text += f'{delimiter}{text}'
+    update.message.reply_text(answer_text)
 
 
 def nowdays_tasks(update, context):
-    pass
-    # u = User.get_user(update, context)
-    # User.objects.filter(user_id=u.user_id).update(waiting_for_input=True)
-    # update.message.reply_text(answer_text, parse_mode=telegram.ParseMode.HTML,
-    #                           reply_markup=make_keyboard_for_task_command(bd_task.task_number))
+    delimiter = '\n\n'  # -----------------------------------------------------------------------------------------------\n'
+    answer_text = f'Список задач на сегодня:'
+    tasks = Task.objects.all().filter(completed=False)
+    for t in tasks:
+        text = t.text.replace(' # ', f'\n')
+        answer_text += f'{delimiter}{text}'
+    update.message.reply_text(answer_text)
 
 
 def photo(update, context):
