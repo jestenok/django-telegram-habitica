@@ -11,7 +11,7 @@ def keyboard(update, context):
     u = User.get_user(update, context)
 
     context.bot.send_message(
-        chat_id=u.user_id, text=('Привет! Я менеджер задач. Нажми на кнопку /task и введи описание задачи '
+        chat_id=u.user_id, text=('Привет! Я менеджер задач. Нажмите на кнопку /task и введите описание задачи '
                                  'одним сообщением. При успешном выполнении или изменении статуса, будет '
                                  'отправлено уведомление.'),
         reply_markup=ReplyKeyboardMarkup([
