@@ -44,9 +44,10 @@ def task_text(task):
 
 
 def message_answer(question):
-    answers = {'привет': 'Привет солнышко тьмок :*',
+    question = question.lower()
+    answers = {'привет': 'Привет, солнышко',
                'спокойной ночи': 'Сладких снов :*', }
     if question in answers:
-        return answers[question.lower()]
+        return answers[question]
     else:
         return ''
