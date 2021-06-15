@@ -28,6 +28,10 @@ def task(update, context):
 
 
 def tomorrow_tasks(update, context):
+    u = User.get_user(update, context)
+    if not u.is_admin:
+        update.message.reply_text('Недостаточно прав!')
+        return
     tomorrow = datetime.date.today() + datetime.timedelta(days=-1)
     delimiter = '\n\n' #-----------------------------------------------------------------------------------------------\n'
     answer_text = f'Список задач за вчерашний день:'
@@ -43,6 +47,10 @@ def tomorrow_tasks(update, context):
 
 
 def nowdays_tasks(update, context):
+    u = User.get_user(update, context)
+    if not u.is_admin:
+        update.message.reply_text('Недостаточно прав!')
+        return
     delimiter = '\n\n'  # -----------------------------------------------------------------------------------------------\n'
     answer_text = f'Список задач на сегодня:'
     tasks = Task.objects.all().filter(completed=False)
