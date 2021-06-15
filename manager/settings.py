@@ -27,6 +27,8 @@ SECRET_KEY = config.SECRET_KEY
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+DEBUG_PROPAGATE_EXCEPTIONS = True
+
 ALLOWED_HOSTS = ['*']
 
 # APPEND_SLASH=False

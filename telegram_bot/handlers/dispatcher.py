@@ -16,6 +16,8 @@ from . import keyboard_utils, commands
 def setup_dispatcher(dp):
     dp.add_handler(CommandHandler("start", keyboard_utils.keyboard))
     dp.add_handler(CommandHandler("task", commands.task))
+    dp.add_handler(CommandHandler("tomorrow_tasks", commands.tomorrow_tasks))
+    dp.add_handler(CommandHandler("nowdays_tasks", commands.nowdays_tasks))
     dp.add_handler(CommandHandler("admin", admin.admin))
     dp.add_handler(CommandHandler("stats", admin.stats))
     dp.add_handler(MessageHandler(Filters.text, commands.text_message))

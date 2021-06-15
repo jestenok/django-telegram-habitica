@@ -14,3 +14,7 @@ from django.core.wsgi import get_wsgi_application
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'manager.settings')
 
 application = get_wsgi_application()
+
+from wdb.ext import WdbMiddleware
+
+application = WdbMiddleware(application)

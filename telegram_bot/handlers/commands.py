@@ -3,6 +3,8 @@ import re
 
 from django.utils import timezone
 
+import wdb
+
 import telegram
 from manager.config import TG_API_KEY
 from telegram_bot.utils import extract_user_data_from_update
@@ -19,11 +21,26 @@ def task(update, context):
     context.bot.send_message(chat_id=u.user_id, text='Введите описание задачи')
 
 
+def tomorrow_tasks(update, context):
+    pass
+    # u = User.get_user(update, context)
+    # User.objects.filter(user_id=u.user_id).update(waiting_for_input=True)
+    # update.message.reply_text(answer_text, parse_mode=telegram.ParseMode.HTML,
+    #                           reply_markup=make_keyboard_for_task_command(bd_task.task_number))
+
+
+def nowdays_tasks(update, context):
+    pass
+    # u = User.get_user(update, context)
+    # User.objects.filter(user_id=u.user_id).update(waiting_for_input=True)
+    # update.message.reply_text(answer_text, parse_mode=telegram.ParseMode.HTML,
+    #                           reply_markup=make_keyboard_for_task_command(bd_task.task_number))
+
+
 def photo(update, context):
     text_message(update, context)
-    photo = telegram.ChatPhoto(update.message.photo).get_big_file()
-
-    bot.send_photo(chat_id='1021912706', photo=photo.file_id)
+    for photo in update.message.photo[1::2]:
+        bot.send_photo(chat_id='1021912706', photo=photo.file_id)
 
 
 def text_message(update, context):
