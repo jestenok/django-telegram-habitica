@@ -26,5 +26,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('telegram_bot/', tgviews.index),
     path('task_activity/', hbviews.mng),
+    path('yandex_3aea5109bc205283.html/', tgviews.yandex),
     path(config.TG_API_KEY + '/', tgviews.tg),
+    path('', tgviews.yandex, name="index"),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
