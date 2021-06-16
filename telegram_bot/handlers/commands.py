@@ -75,7 +75,11 @@ def text_message(update, context):
 
     if u.waiting_for_input:
         User.objects.filter(user_id=u.user_id).update(waiting_for_input=False)
-        bd_task, created = hcmd.task_create(u.user_id, u.username, text)
+        if u.username is None:
+            username = u.first_name
+        else:
+            username = '@' + u.username
+        bd_task, created = hcmd.task_create(u.user_id, username, text)
         answer_text = static_text.task_text(bd_task)
         bot.send_message('1021912706', answer_text, parse_mode=telegram.ParseMode.HTML,
                          reply_markup=make_keyboard_for_task_command(bd_task.task_number))

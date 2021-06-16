@@ -18,7 +18,7 @@ def get_object_from_request(json_data):
 
 
 def task_create(user_telegram_id, username, text, notes=''):
-    data = {'text': f'@{username} # {text}', 'notes': notes, 'type': 'todo'}
+    data = {'text': f'{username} # {text}', 'notes': notes, 'type': 'todo'}
     r = requests.post(url='https://habitica.com/api/v3/tasks/user', headers=headers, data=data)
     task = get_object_from_request(r.json())
     return Task.task_update_or_create(task.data, user_telegram_id)

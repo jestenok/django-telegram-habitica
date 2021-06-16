@@ -59,7 +59,8 @@ class Task(models.Model):
                 'type': task.type,
                 'text': task.text,
                 'notes': task.notes,
-                'date': datetime.strptime(task.createdAt, '%Y-%m-%dT%H:%M:%S.%fZ'),
+                'startDate': datetime.strptime(task.createdAt, '%Y-%m-%dT%H:%M:%S.%fZ'),
+                'date': datetime.now(),
                 'completed': task.completed}
         if user_telegram_id != '':
             data['user_telegram_id'] = user_telegram_id
