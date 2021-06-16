@@ -14,10 +14,15 @@ from django import template
 from manager.config import TG_API_KEY
 from telegram_bot.utils import extract_user_data_from_update
 from telegram_bot.models import User
-from telegram_bot.handlers import static_text
+from telegram_bot.handlers import static_text, parser
 from telegram_bot.handlers.utils import handler_logging
 from telegram_bot.handlers.keyboard_utils import (make_keyboard_for_task_command,
                                                   keyboard_confirm_decline_broadcasting)
+
+def get_tasks(update, context):
+    update.message.reply_text(parser.parse())
+
+
 
 
 def task(update, context):
