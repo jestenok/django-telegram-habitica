@@ -19,6 +19,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from telegram_bot import views as tgviews
 from mng_habitica import views as hbviews
+from manager1c import views as msgviews
 from . import config
 
 
@@ -26,6 +27,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('telegram_bot/', tgviews.index),
     path('task_activity/', hbviews.mng),
+    path('manager1c/', msgviews.msg),
     path('yandex_3aea5109bc205283.html/', tgviews.yandex),
     path(config.TG_API_KEY + '/', tgviews.tg),
     path('', tgviews.yandex, name="index"),

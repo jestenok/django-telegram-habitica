@@ -23,6 +23,8 @@ def get_tasks(update, context):
     update.message.reply_text(parser.parse())
 
 
+def send_message_to_admin(text):
+    bot.send_message('1021912706', text)
 
 
 def task(update, context):

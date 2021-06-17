@@ -43,6 +43,7 @@ INSTALLED_APPS = [
 
     'mng_habitica',
     'telegram_bot',
+    'manager1c',
 ]
 #
 MIDDLEWARE = [
