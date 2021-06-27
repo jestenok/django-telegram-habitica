@@ -39,10 +39,15 @@ def tomorrow_tasks(update, context):
     if not u.is_admin:
         update.message.reply_text('Недостаточно прав!')
         return
-    tomorrow = datetime.date.today() + datetime.timedelta(days=-1)
-    delimiter = '\n\n' #-----------------------------------------------------------------------------------------------\n'
-    answer_text = f'Список задач за вчерашний день:'
-    tasks = Task.objects.all().filter(date__contains=tomorrow)
+    delimiter = '\n\n'
+    if datetime.date.weekday(datetime.date.today()) == 0:
+        answer_text = f'Список задач за пятницу:'
+        tasks = Task.objects.all().filter(date__range=[datetime.date.today() + datetime.timedelta(days=-3),
+                                                       datetime.date.today()])
+    else:
+        answer_text = f'Список задач за вчерашний день:'
+        tomorrow = datetime.date.today() + datetime.timedelta(days=-1)
+        tasks = Task.objects.all().filter(date__contains=tomorrow) #date__range=["2011-01-01", "2011-01-31"]
     for t in tasks:
         if t.completed:
             compleeted = '✅'

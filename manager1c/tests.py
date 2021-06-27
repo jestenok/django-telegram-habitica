@@ -1,3 +1,3 @@
-from django.test import TestCase
+import datetime
 
-# Create your tests here.
+print(datetime.date.weekday(datetime.date.today()))
