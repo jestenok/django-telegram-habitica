@@ -31,7 +31,8 @@ def task(update, context):
     # web_pdb.set_trace()
     u = User.get_user(update, context)
     User.objects.filter(user_id=u.user_id).update(waiting_for_input=True)
-    context.bot.send_message(chat_id=u.user_id, text='Введите описание задачи')
+    context.bot.send_message(chat_id=u.user_id, text='Введите описание задачи',
+                             reply_markup=telegram.ReplyKeyboardMarkup([[telegram.KeyboardButton(text="/task")],], resize_keyboard=True))
 
 
 def tomorrow_tasks(update, context):
@@ -63,13 +64,22 @@ def nowdays_tasks(update, context):
     if not u.is_admin:
         update.message.reply_text('Недостаточно прав!')
         return
-    delimiter = '\n\n'  # -----------------------------------------------------------------------------------------------\n'
+    delimiter = '\n\n'
     answer_text = f'Список задач на сегодня:'
     tasks = Task.objects.all().filter(completed=False)
     for t in tasks:
         text = t.text.replace(' # ', f'\n')
         answer_text += f'{delimiter}{text}'
     update.message.reply_text(answer_text)
+
+
+def announcement(update, context):
+    u = User.get_user(update, context)
+    if not u.is_admin:
+        update.message.reply_text('Недостаточно прав!')
+        return
+    User.objects.filter(user_id=u.user_id).update(waiting_for_announcement=True)
+    update.message.reply_text('Введите описание объявления')
 
 
 def photo(update, context):
@@ -98,6 +108,10 @@ def text_message(update, context):
 
         update.message.reply_text(answer_text, parse_mode=telegram.ParseMode.HTML,
                                   reply_markup=make_keyboard_for_task_command(bd_task.task_number))
+    elif u.waiting_for_announcement:
+        User.objects.filter(user_id=u.user_id).update(waiting_for_announcement=False)
+        for obj in User.objects.all():
+            bot.send_message(obj.user_id, text)
     elif answer != '':
         return update.message.reply_text(answer)
 

@@ -21,6 +21,7 @@ class User(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     waiting_for_input = models.BooleanField(default=False)
+    waiting_for_announcement = models.BooleanField(default=False)
 
     def __str__(self):
         return f'@{self.username}' if self.username is not None else f'{self.user_id}'

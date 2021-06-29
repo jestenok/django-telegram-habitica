@@ -14,9 +14,7 @@ def keyboard(update, context):
         chat_id=u.user_id, text=('Привет! Я менеджер задач. Нажмите на кнопку /task и введите описание задачи '
                                  'одним сообщением. При успешном выполнении или изменении статуса, будет '
                                  'отправлено уведомление.'),
-        reply_markup=ReplyKeyboardMarkup([
-            [KeyboardButton(text="/task"), KeyboardButton(text="/admin"), KeyboardButton(text="/stats")],
-        ], resize_keyboard=True),  # 'False' will make this button appear on half screen (become very large). Likely,
+        reply_markup=ReplyKeyboardMarkup([[KeyboardButton(text="/task")],], resize_keyboard=True),  # 'False' will make this button appear on half screen (become very large). Likely,
         # it will increase click conversion but may decrease UX quality.
     )
 
