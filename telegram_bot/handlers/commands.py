@@ -35,7 +35,7 @@ def task(update, context):
                              reply_markup=telegram.ReplyKeyboardMarkup([[telegram.KeyboardButton(text="/task")],], resize_keyboard=True))
 
 
-def tomorrow_tasks(update, context):
+def yesterday_tasks(update, context):
     u = User.get_user(update, context)
     if not u.is_admin:
         update.message.reply_text('Недостаточно прав!')
