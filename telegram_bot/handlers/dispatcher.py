@@ -21,6 +21,7 @@ def setup_dispatcher(dp):
     dp.add_handler(CommandHandler("admin", admin.admin))
     dp.add_handler(CommandHandler("stats", admin.stats))
     dp.add_handler(CommandHandler("announcement", commands.announcement))
+    dp.add_handler(CommandHandler("anime", commands.anime))
     # dp.add_handler(CommandHandler("parse", commands.get_tasks))
     dp.add_handler(MessageHandler(Filters.text, commands.text_message))
     # dp.add_handler(CommandHandler("ask_location", location.ask_for_location))

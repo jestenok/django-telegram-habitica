@@ -23,6 +23,14 @@ class User(models.Model):
     waiting_for_input = models.BooleanField(default=False)
     waiting_for_announcement = models.BooleanField(default=False)
 
+    anime = models.BooleanField(default=False)
+    anime_code = models.CharField(max_length=50, null=True, blank=True)
+    anime_token = models.CharField(max_length=50, null=True, blank=True)
+    anime_refresh_token = models.CharField(max_length=50, null=True, blank=True)
+    anime_username = models.CharField(max_length=32, null=True, blank=True)
+    anime_password = models.CharField(max_length=32, null=True, blank=True)
+
+
     def __str__(self):
         return f'@{self.username}' if self.username is not None else f'{self.user_id}'
 

@@ -62,4 +62,3 @@ def send_message(user_id, text, parse_mode=None, reply_markup=None, reply_to_mes
         success = True
         User.objects.filter(user_id=user_id).update(is_blocked_bot=False)
     return success
-

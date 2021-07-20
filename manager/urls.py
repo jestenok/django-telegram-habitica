@@ -25,6 +25,7 @@ from . import config
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('anime/', tgviews.anime),
     path('telegram_bot/', tgviews.index),
     path('task_activity/', hbviews.mng),
     path('manager1c/', msgviews.msg),

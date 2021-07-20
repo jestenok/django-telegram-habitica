@@ -1,21 +1,18 @@
 import datetime
 import re
 
+import requests
 from django.utils import timezone
-from django import template
 
-import web_pdb
+import web_pdb #
 
 import telegram
 from mng_habitica.models import Task
-
-from django import template
-
-from manager.config import TG_API_KEY
+from telegram_bot.handlers.anime import search
+from manager.config import TG_API_KEY, anime_client_id, anime_client_secret
 from telegram_bot.utils import extract_user_data_from_update
 from telegram_bot.models import User
 from telegram_bot.handlers import static_text, parser
-from telegram_bot.handlers.utils import handler_logging
 from telegram_bot.handlers.keyboard_utils import (make_keyboard_for_task_command,
                                                   keyboard_confirm_decline_broadcasting)
 
@@ -28,11 +25,26 @@ def send_message_to_admin(text):
 
 
 def task(update, context):
-    # web_pdb.set_trace()
     u = User.get_user(update, context)
     User.objects.filter(user_id=u.user_id).update(waiting_for_input=True)
     context.bot.send_message(chat_id=u.user_id, text='Введите описание задачи',
-                             reply_markup=telegram.ReplyKeyboardMarkup([[telegram.KeyboardButton(text="/task")],], resize_keyboard=True))
+                             reply_markup=telegram.ReplyKeyboardMarkup([[telegram.KeyboardButton(text="/task")],],
+                                                                       resize_keyboard=True))
+
+def anime(update, context):
+    u = User.get_user(update, context)
+    if u.anime:
+        User.objects.filter(user_id=u.user_id).update(anime=False)
+        text = "Режим анимешника деактивирован"
+    else:
+        text = f'Необходимо разрешить доступ по ' \
+               f'<a href="https://shikimori.one/oauth/authorize?client_id={anime_client_id}&' \
+               f'redirect_uri=https%3A%2F%2Fjestenok.ru%2Fanime&response_type=code&scope=user_rates">ссылке</a>'  #%3Fuser_id%3D{u.user_id}
+
+    context.bot.send_message(chat_id=u.user_id, text=text,
+                             reply_markup=telegram.ReplyKeyboardMarkup([[telegram.KeyboardButton(text="/task")],],
+                                                                       resize_keyboard=True),
+                             parse_mode=telegram.ParseMode.HTML)
 
 
 def yesterday_tasks(update, context):
@@ -114,9 +126,15 @@ def text_message(update, context):
             bot.send_message(obj.user_id, text)
     elif answer != '':
         return update.message.reply_text(answer)
+    elif u.anime:
+        obj = search(u.anime_token, text)
+        for item in obj:
+            bot.send_message('1021912706', item.russian, parse_mode=telegram.ParseMode.HTML,)
+                             # reply_markup=make_keyboard_for_task_command())
 
 
-def habitica_task_compleeted(task):
+
+def habitica_task_compleeted(task) -> object:
     text = static_text.task_text(task)
     bot.send_message(task.user_telegram_id, text, parse_mode=telegram.ParseMode.HTML)
 
