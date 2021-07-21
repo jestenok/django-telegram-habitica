@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Egor Krasavin</title>
+	<link rel="icon" type="image/x-icon" href="img/favicon.ico"/>
+	<link rel="stylesheet" href="/static/krasa_winner/style.css">
+	<script type="text/javascript">
+		var symbolList = [	"A",	"B",	"C",	"D",	"E",	"F",	"G",	"H",	"I",	"J",	"K",					"L",	"M",	"N",	"O",	"P",	"Q",	"R",	"S",	"T",	"U",	"V",					"W",	"X",	"Y",	"Z",	"a",	"b",	"c",	"d",	"e",	"f",	"g",					"h",	"i",	"j",	"k",	"l",	"m",	"n",	"o",	"p",	"q",	"r",					"s",	"t",	"u",	"v",	"w",	"x",	"y",	"z",	"0",	"1",	"2",					"3",	"4",	"5",	"6",	"7",	"8",	"9"];
+
+		function readInt(){
+	        var n = document.getElementById("userAnswer").value;
+	        return parseInt(n);
+	    }
+
+	    function write(text){
+	        document.getElementById("info").innerHTML = text;
+	    }
+
+	    function userpassword() {
+	        var passwordSize = readInt();
+	        if (passwordSize > 50){
+	        	write ("Это для защиты от взлома инпланетянами?");
+	        } else {
+		        var symbol = 0;
+		        var passWord = [];
+		        for (var i = 0; i < passwordSize; i ++){
+		            symbolIndex = Math.round(Math.random() * symbolList.length);
+		            passWord.push(symbolList[symbolIndex]);
+		        }
+		        var passWordString = passWord.join('');
+		        write (passWordString);	        	
+	        }
+	    }
+	</script>
+</head>
+<body>
+<div class="content">
+	<div class="header">
+		<a href="https://jestenok.ru/krasa_winner">Main menu</a><span></span>
+		<br>
+		<a href="https://jestenok.ru/guess">Guessing game</a><span>|</span>
+		<a href="https://jestenok.ru/passgen">Password Generator</a>
+	</div>
+	<div class="contentWrap">
+	    <div class="content">
+	        <div class="center">
+
+				<h1>Password Generator</h1>
+                <div class="box">
+
+                    <p>Пароль сформируется из:<br>- цифр <b><i>(0...9)</i></b>;<br>- строчных букв англ. алфавита <b><i>(a...z)</i></b>;<br>- ПРОПИСНЫХ букв англ. алфавита <b><i>(A...Z)</i></b></p>
+                    <p>
+                    	<label class="passBold" id ="info">Введите любую длинну вашего пароля</label>
+                    </p>
+                    <p>
+                    	<input class="numberIn" type ="text" id="userAnswer">
+                    </p>
+                    <br>
+                    <a href="#" onClick="userpassword();" id= "button">Получить</a>
+
+                </div>
+
+	        </div>
+	    </div>
+	</div>
+</div>
+
+<div class="footer">
+	inst: krasa_winner
+<div>
+
+</body>
+</html>

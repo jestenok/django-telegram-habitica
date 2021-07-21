@@ -7,8 +7,8 @@ from telegram.ext import (
 from manager.config import TG_API_KEY
 from telegram_bot.handlers import admin, commands, files, location
 from telegram_bot.handlers.commands import broadcast_command_with_message
-from telegram_bot.handlers.handlers import comlete_task, broadcast_decision_handler
-from telegram_bot.handlers.manage_data import CONFIRM_DECLINE_BROADCAST, COMPLETE_TASK
+from telegram_bot.handlers.handlers import comlete_task, broadcast_decision_handler, anime_action
+from telegram_bot.handlers.manage_data import CONFIRM_DECLINE_BROADCAST, COMPLETE_TASK, ANIME, PLANNED, VIEWED
 from telegram_bot.handlers.static_text import broadcast_command
 from . import keyboard_utils, commands
 
@@ -28,6 +28,8 @@ def setup_dispatcher(dp):
     # dp.add_handler(MessageHandler(Filters.location, location.location_handler))
     # dp.add_handler(MessageHandler(Filters.animation, files.show_file_id,))
     dp.add_handler(CallbackQueryHandler(comlete_task, pattern=COMPLETE_TASK))
+    dp.add_handler(CallbackQueryHandler(anime_action, pattern=PLANNED))
+    dp.add_handler(CallbackQueryHandler(anime_action, pattern=VIEWED))
     # dp.add_handler(MessageHandler(Filters.regex(rf'^{broadcast_command} .*'), broadcast_command_with_message))
     # dp.add_handler(CallbackQueryHandler(broadcast_decision_handler, pattern=f"^{CONFIRM_DECLINE_BROADCAST}"))
 

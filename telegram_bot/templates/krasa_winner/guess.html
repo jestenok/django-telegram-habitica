@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Egor Krasavin</title>
+	<link rel="icon" type="image/x-icon" href="img/favicon.ico"/>
+	<link rel="stylesheet" href="/static/krasa_winner/style.css">
+	<script type="text/javascript">
+
+		var answer = parseInt(Math.random() * 100);
+		var tryCount = 0;
+		var maxTryCountOneGamer = 7;
+
+		//document.getElementById("gamer02").style.display = "none";
+
+		function readInt(){
+			var number = +document.getElementById("userAnswer").value;
+			return parseInt(number);
+			// return +document.getElementById("userAnswer").value;
+		}
+
+		function write(text){
+			document.getElementById("info").innerHTML = text;
+		}
+
+		function hide(id){
+			document.getElementById(id).style.display = "none";
+		}
+
+		function show(id){
+			document.getElementById(id).style.display = "block";
+		}
+
+		function twoGamers(){
+			if (checkInp.checked != true) {
+				hide("gamer02");
+				var gamersCount = 1;
+				maxTryCount = maxTryCountOneGamer * 1; // Измениение кратности
+			} else {
+				show("gamer02");
+				var gamersCount = 2;				
+				maxTryCount = maxTryCountOneGamer * 1; // Измениение кратности
+			}
+			return gamersCount;
+		}
+
+		var gamersCount = twoGamers();
+
+		function guess(gamer){
+			var gamersCount = twoGamers();
+			if(gamersCount == 1){
+				//alert("1 gamers");
+				tryCount++;
+				var tryCountLeft = maxTryCount - tryCount;
+				var userAnswer = readInt();
+
+				if(userAnswer == answer){
+					write("<b>Поздравляю! Вы угадали!</b>");
+					hide("gamer01");
+					hide("userAnswer");
+				} else if(tryCount >= maxTryCount){
+					write("Вы проиграли<br>Правильный ответ: " + answer);
+					hide("gamer01");
+					hide("userAnswer");
+				} else if(userAnswer > answer){
+					write("<b>Много</b>вато. Попробуйте еще раз.<br>Осталось " + tryCountLeft + " попыток. Введите число от 0 до 100");
+				} else if(userAnswer < answer){
+					write("<b>Мало</b>вато. Попробуйте еще раз.<br>Осталось " + tryCountLeft + " попыток. Введите число от 0 до 100");	
+				}
+			} else if(gamersCount == 2){
+				//alert("2 gamers");
+				tryCount++;
+				var tryCountLeft = maxTryCount - tryCount;
+
+				if (gamer == "gamer01") {
+					show("gamer02");
+					hide("gamer01");
+				} else {
+					show("gamer01");
+					hide("gamer02");				
+				}
+
+				var userAnswer = readInt();
+				if(userAnswer == answer && gamer == "gamer01"){
+					write("<b>Игрок № 1, поздравляю! Вы угадали!</b>");
+					hide("gamer01");
+					hide("gamer02");
+					hide("userAnswer");
+				} else if(userAnswer == answer && gamer == "gamer02"){
+					write("<b>Игрок № 2, поздравляю! Вы угадали!</b>");
+					hide("gamer01");
+					hide("gamer02");
+					hide("userAnswer");
+				} else if(tryCount >= maxTryCount){
+					write("Вы проиграли<br>Правильный ответ: " + answer);
+					hide("gamer01");
+					hide("gamer02");
+					hide("userAnswer");
+				} else if(userAnswer > answer){
+					write("<b>Много</b>вато. Попробуйте еще раз.<br>Осталось " + tryCountLeft + " попыток. <br>Введите число от 0 до 100");
+				} else if(userAnswer < answer){
+					write("<b>Мало</b>вато. Попробуйте еще раз.<br>Осталось " + tryCountLeft + " попыток. <br>Введите число от 0 до 100");	
+				}
+			}
+		}
+	</script>
+</head>
+<body>
+
+<div class="content">
+	<div class="header">
+		<a href="https://jestenok.ru/krasa_winner">Main menu</a><span></span>
+		<br>
+		<a href="https://jestenok.ru/guess">Guessing game</a><span>|</span>
+		<a href="https://jestenok.ru/passgen">Password Generator</a>
+	</div>
+	<div class="contentWrap">
+	    <div class="content">
+	        <div class="center">
+
+				<h1>Guessing game</h1>
+				
+				<div class="box">
+					<label><input class="check" type="checkbox" OnClick="twoGamers();" name="checkInp" id="checkInp" checked> 2 игрока</label>
+
+					<p id="info">Угадайте число от 0 до 100</p>
+					<input class="numberIn" type="number" id="userAnswer">
+					<br>
+					<a href="#" onClick="guess(id);" id="gamer01">Игрок № 1</a>
+					<a href="#" onClick="guess(id);" id="gamer02">Игрок № 2</a>
+				</div>
+
+	        </div>
+	    </div>
+	</div>
+</div>
+
+<div class="footer">
+	inst: krasa_winner
+<div>
+
+</body>
+</html>

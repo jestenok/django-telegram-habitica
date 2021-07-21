@@ -14,7 +14,8 @@ from telegram_bot.utils import extract_user_data_from_update
 from telegram_bot.models import User
 from telegram_bot.handlers import static_text, parser
 from telegram_bot.handlers.keyboard_utils import (make_keyboard_for_task_command,
-                                                  keyboard_confirm_decline_broadcasting)
+                                                  keyboard_confirm_decline_broadcasting,
+                                                  make_keyboard_for_anime_search)
 
 def get_tasks(update, context):
     update.message.reply_text(parser.parse())
@@ -30,6 +31,7 @@ def task(update, context):
     context.bot.send_message(chat_id=u.user_id, text='Введите описание задачи',
                              reply_markup=telegram.ReplyKeyboardMarkup([[telegram.KeyboardButton(text="/task")],],
                                                                        resize_keyboard=True))
+
 
 def anime(update, context):
     u = User.get_user(update, context)
@@ -128,10 +130,20 @@ def text_message(update, context):
         return update.message.reply_text(answer)
     elif u.anime:
         obj = search(u.anime_token, text)
+        bot.send_message('1021912706', f"Список аниме по запросу {text}:", parse_mode=telegram.ParseMode.HTML, )
+                            # reply_markup=make_keyboard_for_task_command())
+        headers = {"User-Agent": "telegram bot", "Content-Type": "application/json"}
+        i=1
         for item in obj:
-            bot.send_message('1021912706', item.russian, parse_mode=telegram.ParseMode.HTML,)
-                             # reply_markup=make_keyboard_for_task_command())
-
+            datetime_object = datetime.datetime.strptime(item.aired_on, '%Y-%m-%d')
+            text = f'{i}. <a href="https://shikimori.one{item.url}">{item.russian}</a>' \
+                   f'\n({datetime_object.strftime("%d.%m.%Y")})'
+            bot.send_photo('1021912706',
+                           photo=requests.get(f"https://shikimori.one{item.image.original}", headers=headers).content,
+                           reply_markup=make_keyboard_for_anime_search(item.id),
+                           caption=text,
+                           parse_mode=telegram.ParseMode.HTML)
+            i+=1
 
 
 def habitica_task_compleeted(task) -> object:

@@ -2,7 +2,7 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton,
 from telegram_bot.models import User
 
 from telegram_bot.handlers.manage_data import SECRET_LEVEL_BUTTON, CONFIRM_DECLINE_BROADCAST, CONFIRM_BROADCAST, \
-    DECLINE_BROADCAST, COMPLETE_TASK
+    DECLINE_BROADCAST, COMPLETE_TASK, PLANNED, VIEWED
 from telegram_bot.handlers.static_text import github_button_text, secret_level_button_text, confirm_broadcast, \
     decline_broadcast
 
@@ -21,6 +21,13 @@ def keyboard(update, context):
 
 def make_keyboard_for_task_command(task_number):
     buttons = [[InlineKeyboardButton('Завершить', callback_data=f'{COMPLETE_TASK}{task_number}')]]
+
+    return InlineKeyboardMarkup(buttons)
+
+
+def make_keyboard_for_anime_search(id):
+    buttons = [[InlineKeyboardButton('Просмотрено', callback_data=f'{PLANNED}{id}'),
+               InlineKeyboardButton('В планах', callback_data=f'{VIEWED}{id}')]]
 
     return InlineKeyboardMarkup(buttons)
 
