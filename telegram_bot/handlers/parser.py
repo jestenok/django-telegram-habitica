@@ -19,12 +19,12 @@
 #
 # def login():
 #     session = requests.Session()
-#     session.post(LOGIN_URL, data=DATA, headers=HEADERS)
+#     session.post(LOGIN_URL, data=DATA, anime_headers=HEADERS)
 #     return session
 #
 #
 # def get_html(session, url, params=None):
-#     r = session.get(url, headers=HEADERS, params=params)
+#     r = session.get(url, anime_headers=HEADERS, params=params)
 #     return r
 #
 #

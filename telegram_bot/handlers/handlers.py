@@ -5,13 +5,13 @@ from mng_habitica.handlers.commands import task_create, task_update
 from mng_habitica.models import Task
 from telegram_bot.handlers.manage_data import CONFIRM_DECLINE_BROADCAST, CONFIRM_BROADCAST, COMPLETE_TASK, PLANNED, VIEWED
 from telegram_bot.handlers.static_text import unlock_secret_room, message_is_sent, task_text
-from telegram_bot.handlers.utils import handler_logging
+from telegram_bot.handlers.commands import bot
 from telegram_bot.models import User
 from telegram_bot.utils import extract_user_data_from_update
 from django.utils import timezone
+from telegram_bot.handlers.anime import change_status
 
 
-@handler_logging()
 def comlete_task(update, context):
     user_id = extract_user_data_from_update(update)['user_id']
     task_number = update.callback_query.data[len(COMPLETE_TASK):]
@@ -29,26 +29,33 @@ def comlete_task(update, context):
     )
 
 
-@handler_logging()
 def anime_action(update, context):
-    user_id = extract_user_data_from_update(update)['user_id']
+    u = User.get_user(update, context)
     text = update.callback_query.data
+    caption = update.callback_query.message.caption
+
+    url = update.callback_query.message.caption_entities[0].url
+    id = url[url.find("animes/") + 7:url.find("-")]
+
+    text_for_link = caption[caption.find(". ") + 2:caption.find("(")]
+    caption = caption.replace(text_for_link, f'<a href="{url}">{text_for_link}</a>')
+
     if text.find(PLANNED) != -1 :
-        pass
-        # context.bot.edit_message_text(
-        #     text="Запланировано",
-        #     chat_id=user_id,
-        #     message_id=update.callback_query.message.message_id,
-        #     parse_mode=telegram.ParseMode.HTML
-        # )
+        change_status(u, id, "planned")
+        bot.edit_message_caption(
+            caption=caption + "\n🕒 Запланировано",
+            chat_id=u.user_id,
+            message_id=update.callback_query.message.message_id,
+            parse_mode=telegram.ParseMode.HTML
+        )
     else:
-        pass
-        # context.bot.edit_message_text(
-        #     text="Просмотрено",
-        #     chat_id=user_id,
-        #     message_id=update.callback_query.message.message_id,
-        #     parse_mode=telegram.ParseMode.HTML
-        # )
+        change_status(u, id, "completed")
+        bot.edit_message_caption(
+            caption=caption + "\n✅ Просмотрено",
+            chat_id=u.user_id,
+            message_id=update.callback_query.message.message_id,
+            parse_mode=telegram.ParseMode.HTML
+        )
 
 
 def broadcast_decision_handler(update, context): #callback_data: CONFIRM_DECLINE_BROADCAST variable from manage_data.py

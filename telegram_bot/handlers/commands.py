@@ -4,18 +4,17 @@ import re
 import requests
 from django.utils import timezone
 
-import web_pdb #
-
 import telegram
 from mng_habitica.models import Task
-from telegram_bot.handlers.anime import search
+from telegram_bot.handlers.anime import search, anime_headers
 from manager.config import TG_API_KEY, anime_client_id, anime_client_secret
 from telegram_bot.utils import extract_user_data_from_update
-from telegram_bot.models import User
+from telegram_bot.models import User, UserMessages, Logs
 from telegram_bot.handlers import static_text, parser
 from telegram_bot.handlers.keyboard_utils import (make_keyboard_for_task_command,
                                                   keyboard_confirm_decline_broadcasting,
                                                   make_keyboard_for_anime_search)
+
 
 def get_tasks(update, context):
     update.message.reply_text(parser.parse())
@@ -33,6 +32,23 @@ def task(update, context):
                                                                        resize_keyboard=True))
 
 
+def mylist(update, context):
+    u = User.get_user(update, context)
+    if u.anime:
+        obj = search(u, planned=True)
+        text = f"Список запланированных аниме:"
+
+        i = 1
+        for item in obj:
+            datetime_object = datetime.datetime.strptime(item.aired_on, '%Y-%m-%d')
+            text += f'\n{i}. <a href="https://shikimori.one{item.url}">{item.russian}</a>' \
+                   f' ({datetime_object.strftime("%d.%m.%Y")})'
+            i += 1
+
+        update.message.reply_text(text, parse_mode=telegram.ParseMode.HTML,
+                                  disable_web_page_preview=True)
+
+
 def anime(update, context):
     u = User.get_user(update, context)
     if u.anime:
@@ -41,7 +57,7 @@ def anime(update, context):
     else:
         text = f'Необходимо разрешить доступ по ' \
                f'<a href="https://shikimori.one/oauth/authorize?client_id={anime_client_id}&' \
-               f'redirect_uri=https%3A%2F%2Fjestenok.ru%2Fanime&response_type=code&scope=user_rates">ссылке</a>'  #%3Fuser_id%3D{u.user_id}
+               f'redirect_uri=https%3A%2F%2Fjestenok.ru%2Fanime%3Fuser_id%3D{u.user_id}&response_type=code&scope=user_rates">ссылке</a>' #
 
     context.bot.send_message(chat_id=u.user_id, text=text,
                              reply_markup=telegram.ReplyKeyboardMarkup([[telegram.KeyboardButton(text="/task")],],
@@ -104,11 +120,11 @@ def photo(update, context):
 
 def text_message(update, context):
     from mng_habitica.handlers import commands as hcmd
-
     u = User.get_user(update, context)
     text = update.message.text
-    answer = static_text.message_answer(text)
+    UserMessages.log(u,text)
 
+    answer = static_text.message_answer(text)
     if u.waiting_for_input:
         User.objects.filter(user_id=u.user_id).update(waiting_for_input=False)
         if u.username is None:
@@ -126,24 +142,22 @@ def text_message(update, context):
         User.objects.filter(user_id=u.user_id).update(waiting_for_announcement=False)
         for obj in User.objects.all():
             bot.send_message(obj.user_id, text)
-    elif answer != '':
+    elif answer:
         return update.message.reply_text(answer)
     elif u.anime:
-        obj = search(u.anime_token, text)
-        bot.send_message('1021912706', f"Список аниме по запросу {text}:", parse_mode=telegram.ParseMode.HTML, )
-                            # reply_markup=make_keyboard_for_task_command())
-        headers = {"User-Agent": "telegram bot", "Content-Type": "application/json"}
+        obj = search(u, text)
+        update.message.reply_text(f"Список аниме по запросу {text}:", parse_mode=telegram.ParseMode.HTML)
         i=1
         for item in obj:
             datetime_object = datetime.datetime.strptime(item.aired_on, '%Y-%m-%d')
             text = f'{i}. <a href="https://shikimori.one{item.url}">{item.russian}</a>' \
                    f'\n({datetime_object.strftime("%d.%m.%Y")})'
-            bot.send_photo('1021912706',
-                           photo=requests.get(f"https://shikimori.one{item.image.original}", headers=headers).content,
+            bot.send_photo(u.user_id,
+                           photo=requests.get(f"https://shikimori.one{item.image.original}", headers=anime_headers()).content,
                            reply_markup=make_keyboard_for_anime_search(item.id),
                            caption=text,
                            parse_mode=telegram.ParseMode.HTML)
-            i+=1
+            i += 1
 
 
 def habitica_task_compleeted(task) -> object:

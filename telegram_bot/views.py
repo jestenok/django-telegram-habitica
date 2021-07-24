@@ -10,6 +10,8 @@ import wdb
 import os
 import requests
 
+from telegram_bot.models import User, Logs
+
 
 def index(request):
     return JsonResponse({"error": "sup hacker"})
@@ -18,7 +20,6 @@ def index(request):
 @csrf_exempt
 def tg(request):
     if request.method == "POST":
-        print(request.body)
         process_telegram_event(json.loads(request.body))
         return JsonResponse({"ok": "POST request processed"})
 
@@ -41,5 +42,7 @@ class Egor:
 
 @csrf_exempt
 def anime(request):
-    authorize("1021912706", request.GET.get('code'))
+    u = User.objects.filter(user_id="1021912706")
+    u.update(anime_code=request.GET.get('code'))
+    authorize(u[0])
     return JsonResponse({"ok": "POST request processed"})

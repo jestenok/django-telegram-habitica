@@ -26,8 +26,8 @@ def make_keyboard_for_task_command(task_number):
 
 
 def make_keyboard_for_anime_search(id):
-    buttons = [[InlineKeyboardButton('Просмотрено', callback_data=f'{PLANNED}{id}'),
-               InlineKeyboardButton('В планах', callback_data=f'{VIEWED}{id}')]]
+    buttons = [[InlineKeyboardButton('Просмотрено', callback_data=f'{VIEWED}{id}'),
+               InlineKeyboardButton('В планах', callback_data=f'{PLANNED}{id}')]]
 
     return InlineKeyboardMarkup(buttons)
 

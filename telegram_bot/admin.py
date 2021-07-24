@@ -1,16 +1,5 @@
-import random
-import telegram
 from django.contrib import admin
-from django.http import HttpResponseRedirect
-from django.shortcuts import render
-
-from manager.settings import DEBUG
-
-from telegram_bot.models import Location, Arcgis
-from telegram_bot.models import User, UserActionLog
-from telegram_bot.forms import BroadcastForm
-from telegram_bot.handlers import utils
-
+from telegram_bot.models import User, Logs, UserMessages
 
 
 @admin.register(User)
@@ -30,16 +19,11 @@ class UserAdmin(admin.ModelAdmin):
 
 
 
-@admin.register(Location)
+@admin.register(Logs)
 class LocationAdmin(admin.ModelAdmin):
-    list_display = ['id', 'user_id', 'created_at']
+     list_display = ['date', 'log_type', 'user', 'text']
 
 
-@admin.register(Arcgis)
-class ArcgisAdmin(admin.ModelAdmin):
-    list_display = ['location', 'city', 'country_code']
-
-
-@admin.register(UserActionLog)
-class UserActionLogAdmin(admin.ModelAdmin):
-    list_display = ['user', 'action', 'created_at']
+@admin.register(UserMessages)
+class LocationAdmin(admin.ModelAdmin):
+     list_display = ['date', 'user', 'text']
