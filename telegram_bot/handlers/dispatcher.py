@@ -5,11 +5,11 @@ from telegram.ext import (
     InlineQueryHandler, CallbackQueryHandler,
     ChosenInlineResultHandler,)
 from manager.config import TG_API_KEY
-from telegram_bot.handlers import admin
-from telegram_bot.handlers.commands import broadcast_command_with_message
-from telegram_bot.handlers.handlers import comlete_task, broadcast_decision_handler, anime_action
-from telegram_bot.handlers.manage_data import CONFIRM_DECLINE_BROADCAST, COMPLETE_TASK, ANIME, PLANNED, VIEWED
-from telegram_bot.handlers.static_text import broadcast_command
+from . import admin
+from .commands import broadcast_command_with_message
+from .handlers import comlete_task, broadcast_decision_handler, anime_action
+from .manage_data import CONFIRM_DECLINE_BROADCAST, COMPLETE_TASK, ANIME, PLANNED, VIEWED
+from .static_text import broadcast_command
 from . import keyboard_utils, commands
 
 
@@ -24,10 +24,10 @@ def setup_dispatcher(dp):
     dp.add_handler(CommandHandler("anime", commands.anime))
     dp.add_handler(CommandHandler("mylist", commands.mylist))
     dp.add_handler(MessageHandler(Filters.text, commands.text_message))
+    dp.add_handler(MessageHandler(Filters.photo, commands.text_message))
     dp.add_handler(CallbackQueryHandler(comlete_task, pattern=COMPLETE_TASK))
     dp.add_handler(CallbackQueryHandler(anime_action, pattern=PLANNED))
     dp.add_handler(CallbackQueryHandler(anime_action, pattern=VIEWED))
-    dp.add_handler(MessageHandler(Filters.photo, commands.photo))
     return dp
 
 

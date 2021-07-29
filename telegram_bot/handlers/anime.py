@@ -63,8 +63,9 @@ def authorize(u):
     else:
         data["grant_type"] = "authorization_code"
         data["code"] = u.anime_code
-        data["redirect_uri"] = "https://jestenok.ru/anime"
+        data["redirect_uri"] = f"https://jestenok.ru/anime?user_id={u.user_id}"
 
+    print(data)
     r = requests.post(url="https://shikimori.one/oauth/token",
                             headers=anime_headers(),
                             allow_redirects=False,

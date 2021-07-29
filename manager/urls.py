@@ -14,12 +14,10 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from telegram_bot import views as tgviews
-from mng_habitica import views as hbviews
-from manager1c import views as msgviews
 from . import config
 
 
@@ -27,12 +25,12 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('anime/', tgviews.anime),
     path('telegram_bot/', tgviews.index),
-    path('task_activity/', hbviews.mng),
-    path('manager1c/', msgviews.msg),
+    path('task_activity/', tgviews.mng),
+    path('manager1c/', tgviews.msg),
     path('krasa_winner/', tgviews.Egor.index),
     path('guess/', tgviews.Egor.guess),
     path('passgen/', tgviews.Egor.passgen),
-    path('yandex_3aea5109bc205283.html/', tgviews.yandex),
+    path('api/', include('telegram_bot.api.urls')),
     path(config.TG_API_KEY + '/', tgviews.tg),
-    path('', tgviews.yandex, name="index"),
+    path('', tgviews.index, name="index"),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

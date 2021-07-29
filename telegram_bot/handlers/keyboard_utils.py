@@ -1,7 +1,7 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton, ReplyKeyboardMarkup
 from telegram_bot.models import User
 
-from telegram_bot.handlers.manage_data import SECRET_LEVEL_BUTTON, CONFIRM_DECLINE_BROADCAST, CONFIRM_BROADCAST, \
+from .manage_data import SECRET_LEVEL_BUTTON, CONFIRM_DECLINE_BROADCAST, CONFIRM_BROADCAST, \
     DECLINE_BROADCAST, COMPLETE_TASK, PLANNED, VIEWED
 from telegram_bot.handlers.static_text import github_button_text, secret_level_button_text, confirm_broadcast, \
     decline_broadcast

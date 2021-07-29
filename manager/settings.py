@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config.SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 # DEBUG_PROPAGATE_EXCEPTIONS = True
 
 ALLOWED_HOSTS = ['*']
@@ -41,10 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
-    'mng_habitica',
+    'rest_framework',
     'telegram_bot',
-    'manager1c',
 ]
 #
 MIDDLEWARE = [
@@ -70,7 +68,7 @@ ROOT_URLCONF = 'manager.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'react-app/build'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -141,6 +139,10 @@ STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+STATICFILES_DIRS = (
+    (BASE_DIR / 'react-app/build/static'),
+)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

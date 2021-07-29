@@ -38,7 +38,7 @@
 				maxTryCount = maxTryCountOneGamer * 1; // Измениение кратности
 			} else {
 				show("gamer02");
-				var gamersCount = 2;				
+				var gamersCount = 2;
 				maxTryCount = maxTryCountOneGamer * 1; // Измениение кратности
 			}
 			return gamersCount;
@@ -65,7 +65,7 @@
 				} else if(userAnswer > answer){
 					write("<b>Много</b>вато. Попробуйте еще раз.<br>Осталось " + tryCountLeft + " попыток. Введите число от 0 до 100");
 				} else if(userAnswer < answer){
-					write("<b>Мало</b>вато. Попробуйте еще раз.<br>Осталось " + tryCountLeft + " попыток. Введите число от 0 до 100");	
+					write("<b>Мало</b>вато. Попробуйте еще раз.<br>Осталось " + tryCountLeft + " попыток. Введите число от 0 до 100");
 				}
 			} else if(gamersCount == 2){
 				//alert("2 gamers");
@@ -77,7 +77,7 @@
 					hide("gamer01");
 				} else {
 					show("gamer01");
-					hide("gamer02");				
+					hide("gamer02");
 				}
 
 				var userAnswer = readInt();
@@ -99,7 +99,7 @@
 				} else if(userAnswer > answer){
 					write("<b>Много</b>вато. Попробуйте еще раз.<br>Осталось " + tryCountLeft + " попыток. <br>Введите число от 0 до 100");
 				} else if(userAnswer < answer){
-					write("<b>Мало</b>вато. Попробуйте еще раз.<br>Осталось " + tryCountLeft + " попыток. <br>Введите число от 0 до 100");	
+					write("<b>Мало</b>вато. Попробуйте еще раз.<br>Осталось " + tryCountLeft + " попыток. <br>Введите число от 0 до 100");
 				}
 			}
 		}
@@ -119,7 +119,7 @@
 	        <div class="center">
 
 				<h1>Guessing game</h1>
-				
+
 				<div class="box">
 					<label><input class="check" type="checkbox" OnClick="twoGamers();" name="checkInp" id="checkInp" checked> 2 игрока</label>
 

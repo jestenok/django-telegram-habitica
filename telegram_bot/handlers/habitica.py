@@ -2,7 +2,7 @@ import requests
 from manager import config
 import json
 from collections import namedtuple
-from mng_habitica.models import Task
+from telegram_bot.models import Task
 
 
 api_user = config.HABITICA_API_USER

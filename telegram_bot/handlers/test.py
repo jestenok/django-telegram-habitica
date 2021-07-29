@@ -1,4 +1,10 @@
-import requests
-
-headers={"User-Agent": "telegram bot", "Content-Type":"application/json"}
-print(requests.get(f"https://shikimori.one/system/animes/original/22319.jpg?1610272095", headers=headers).content)
+# from jira import JIRA
+#
+# jira_options = {'server': 'https://jestenok.atlassian.net'}
+#
+# jira = JIRA(options=jira_options, oauth=("jestenok", "U0pVmkzUoh69ZfG4LBt45CFE"))
+#
+# jql = 'projectKey=AQSI'
+# issues_list = jira.search_issues(jql)
+#
+# x =1

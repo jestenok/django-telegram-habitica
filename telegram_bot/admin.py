@@ -1,5 +1,5 @@
 from django.contrib import admin
-from telegram_bot.models import User, Logs, UserMessages
+from telegram_bot.models import User, Logs, UserMessages, Message, Task
 
 
 @admin.register(User)
@@ -27,3 +27,13 @@ class LocationAdmin(admin.ModelAdmin):
 @admin.register(UserMessages)
 class LocationAdmin(admin.ModelAdmin):
      list_display = ['date', 'user', 'text']
+
+
+@admin.register(Message)
+class TaskAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(Task)
+class TaskAdmin(admin.ModelAdmin):
+    pass

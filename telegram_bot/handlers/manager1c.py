@@ -2,8 +2,8 @@ import requests
 from manager import config
 import json
 from collections import namedtuple
-from manager1c.models import Message
-from telegram_bot.handlers.commands import send_message_to_admin
+from telegram_bot.models import Message
+from .commands import send_message_to_admin
 
 
 def process_1c_event(json_data):

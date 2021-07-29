@@ -2,19 +2,17 @@ import json
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
-
+from telegram_bot.handlers.manager1c import process_1c_event
 from telegram_bot.handlers.dispatcher import process_telegram_event
 from telegram_bot.handlers.anime import authorize
+from telegram_bot.handlers.commands import bot
+from telegram_bot.handlers.habitica import task_compleeted
 from telegram_bot.handlers.commands import send_message_to_admin
-import wdb
-import os
-import requests
-
 from telegram_bot.models import User, Logs
 
 
 def index(request):
-    return JsonResponse({"error": "sup hacker"})
+    return render(request, 'index.html', {})
 
 
 @csrf_exempt
@@ -22,9 +20,6 @@ def tg(request):
     if request.method == "POST":
         process_telegram_event(json.loads(request.body))
         return JsonResponse({"ok": "POST request processed"})
-
-def yandex(request):
-    return render(request, '/home/django-telegram-habitica/telegram_bot/templates/yandex_3aea5109bc205283.html')
 
 
 class Egor:
@@ -42,7 +37,25 @@ class Egor:
 
 @csrf_exempt
 def anime(request):
-    u = User.objects.filter(user_id="1021912706")
+    user_id = request.GET.get('user_id')  #user_id = "1021912706"
+    u = User.objects.filter(user_id=user_id)
     u.update(anime_code=request.GET.get('code'))
-    authorize(u[0])
+    if authorize(u[0]):
+        bot.send_message(text="Аккаунт успешно привязан!", chat_id=user_id)
     return JsonResponse({"ok": "POST request processed"})
+
+
+@csrf_exempt
+def msg(request):
+    if request.method == "POST":
+        print(request.body)
+        process_1c_event(json.loads(request.body))
+        return JsonResponse({"200": "POST request processed"})
+
+
+@csrf_exempt
+def mng(request):
+    if request.method == "POST":
+        json_string = request.body.decode('utf-8').replace('_id', 'id')
+        task_compleeted(json.loads(json_string))
+        return JsonResponse({"ok": "POST request processed"})
