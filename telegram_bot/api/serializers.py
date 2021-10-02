@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from ..models import Task, User
+from ..models import Task, User, Anime
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -16,4 +16,11 @@ class TaskSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Task
+        fields = '__all__'
+
+
+class AnimeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Anime
         fields = '__all__'

@@ -23,6 +23,7 @@ def setup_dispatcher(dp):
     dp.add_handler(CommandHandler("announcement", commands.announcement))
     dp.add_handler(CommandHandler("anime", commands.anime))
     dp.add_handler(CommandHandler("mylist", commands.mylist))
+    dp.add_handler(CommandHandler("search", commands.anime_search))
     dp.add_handler(MessageHandler(Filters.text, commands.text_message))
     dp.add_handler(MessageHandler(Filters.photo, commands.text_message))
     dp.add_handler(CallbackQueryHandler(comlete_task, pattern=COMPLETE_TASK))

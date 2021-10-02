@@ -5,6 +5,7 @@ import requests
 from django.utils import timezone
 
 import telegram
+
 from .anime import search, anime_headers
 from manager.config import TG_API_KEY, anime_client_id
 from telegram_bot.utils import extract_user_data_from_update
@@ -18,15 +19,13 @@ from .keyboard_utils import (make_keyboard_for_task_command,
 def text_message(update, context):
     u = User.get_user(update, context)
     text = update.message.caption if update.message.caption else update.message.text
-    UserMessages.log(u,text)
-    answer = static_text.message_answer(text)
+    UserMessages.log(u, text)
     if u.waiting_for_input:
         User.objects.filter(user_id=u.user_id).update(waiting_for_input=False)
         username = f'@{u.username}' if u.username else u.first_name
-        bd_task, created = hcmd.task_create(u.user_id, username, text)
+        bd_task, created = hcmd.task_create(u, username, text)
         answer_text = static_text.task_text(bd_task)
-
-        receivers = ['1021912706', u.user_id]
+        receivers = {u.user_id, 1021912706}
         for receiver in receivers:
             if update.message.caption:
                 photo = update.message.photo[len(update.message.photo) - 1]
@@ -44,13 +43,16 @@ def text_message(update, context):
     elif u.waiting_for_announcement:
         User.objects.filter(user_id=u.user_id).update(waiting_for_announcement=False)
         for obj in User.objects.all():
-            bot.send_message(obj.user_id, text)
-    elif answer:
-        return update.message.reply_text(answer)
-    elif u.anime:
+            try:
+                bot.send_message(obj.user_id, text)
+            except Exception:
+                User.objects.filter(user_id=obj.user_id).update(is_blocked_bot=True)
+
+    elif u.anime and u.anime_search:
+        User.objects.filter(user_id=u.user_id).update(anime_search=False)
         obj = search(u, text)
         update.message.reply_text(f"Список аниме по запросу {text}:", parse_mode=telegram.ParseMode.HTML)
-        i=1
+        i = 1
         for item in obj:
             datetime_object = datetime.datetime.strptime(item.aired_on, '%Y-%m-%d')
             text = f'{i}. <a href="https://shikimori.one{item.url}">{item.russian}</a>' \
@@ -61,14 +63,26 @@ def text_message(update, context):
                            caption=text,
                            parse_mode=telegram.ParseMode.HTML)
             i += 1
+    else:
+        answer = ""
+        try:
+            r = requests.get('http://jestenok.ru:3210/aichatbot', {'text': text})
+            if r.status_code == 200:
+                answer = r.text if r.text else 'Ничего не понятно, но очень интересно'
+        except:
+            answer = "Процесс наебнулся("
+        if answer:
+            update.message.reply_text(answer)
 
 
 def get_tasks(update, context):
     update.message.reply_text(parser.parse())
 
 
-def send_message_to_admin(text):
-    bot.send_message('1021912706', text)
+def bot_send_message(user_id, text):
+    if not user_id:
+        user_id = '1021912706'
+    bot.send_message(user_id, text)
 
 
 def task(update, context):
@@ -89,7 +103,7 @@ def mylist(update, context):
         for item in obj:
             datetime_object = datetime.datetime.strptime(item.aired_on, '%Y-%m-%d')
             text += f'\n{i}. <a href="https://shikimori.one{item.url}">{item.russian}</a>' \
-                   f' ({datetime_object.strftime("%d.%m.%Y")})'
+                    f' ({datetime_object.strftime("%d.%m.%Y")})'
             i += 1
 
         update.message.reply_text(text, parse_mode=telegram.ParseMode.HTML,
@@ -108,7 +122,7 @@ def anime(update, context):
                f'&response_type=code&scope=user_rates">ссылке</a>'
 
     context.bot.send_message(chat_id=u.user_id, text=text,
-                             reply_markup=telegram.ReplyKeyboardMarkup([[telegram.KeyboardButton(text="/task")],],
+                             reply_markup=telegram.ReplyKeyboardMarkup([[telegram.KeyboardButton(text="/task")]],
                                                                        resize_keyboard=True),
                              parse_mode=telegram.ParseMode.HTML)
 
@@ -160,9 +174,19 @@ def announcement(update, context):
     update.message.reply_text('Введите описание объявления')
 
 
+def anime_search(update, context):
+    u = User.get_user(update, context)
+    if not u.anime:
+        update.message.reply_text('Вы не анимешник(\n'
+                                  'Нажмите /anime')
+        return
+    User.objects.filter(user_id=u.user_id).update(anime_search=True)
+    update.message.reply_text('Введите название тайтла')
+
+
 def habitica_task_compleeted(task) -> object:
     text = static_text.task_text(task)
-    bot.send_message(task.user_telegram_id, text, parse_mode=telegram.ParseMode.HTML)
+    bot.send_message(task.user_telegram_id.user_id, text, parse_mode=telegram.ParseMode.HTML)
 
 
 def stats(update, context):
@@ -203,7 +227,7 @@ def broadcast_command_with_message(update, context):
             reply_markup=markup
         )
     except telegram.error.BadRequest as e:
-        place_where_mistake_begins = re.findall(r"offset (\d{1,})$", str(e))
+        place_where_mistake_begins = re.findall(r'offset (\d+)$', str(e))
         text_error = static_text.error_with_markdown
         if len(place_where_mistake_begins):
             text_error += f"{static_text.specify_word_with_error}'{text[int(place_where_mistake_begins[0]):].split(' ')[0]}'"
@@ -212,5 +236,8 @@ def broadcast_command_with_message(update, context):
             chat_id=user_id
         )
 
+
+def chat(data):
+    pass
 
 bot = telegram.Bot(TG_API_KEY)

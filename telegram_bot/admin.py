@@ -1,5 +1,5 @@
 from django.contrib import admin
-from telegram_bot.models import User, Logs, UserMessages, Message, Task
+from telegram_bot.models import User, Logs, UserMessages, Message, Task, Pickup, Requests, ChatAnswers
 
 
 @admin.register(User)
@@ -30,10 +30,25 @@ class LocationAdmin(admin.ModelAdmin):
 
 
 @admin.register(Message)
-class TaskAdmin(admin.ModelAdmin):
+class MessageAdmin(admin.ModelAdmin):
     pass
 
 
 @admin.register(Task)
 class TaskAdmin(admin.ModelAdmin):
     pass
+
+
+@admin.register(Pickup)
+class PickupAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(Requests)
+class RequestsAdmin(admin.ModelAdmin):
+    list_display = ['ip_addr', 'date']
+
+
+@admin.register(ChatAnswers)
+class RequestsAdmin(admin.ModelAdmin):
+    list_display = ['request', 'answer']

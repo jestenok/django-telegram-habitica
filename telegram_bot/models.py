@@ -31,7 +31,9 @@ class User(models.Model):
     anime_refresh_token = models.CharField(max_length=50, null=True, blank=True)
     anime_username = models.CharField(max_length=32, null=True, blank=True)
     anime_password = models.CharField(max_length=32, null=True, blank=True)
+    anime_search = models.BooleanField(default=False)
 
+    photo_id = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
         return f'@{self.username}' if self.username is not None else f'{self.user_id}'
@@ -132,7 +134,7 @@ class Task(models.Model):
                     ('daily', 'daily'),
                     ('todo', 'todo'),
                     ('reward', 'reward')]
-    type = models.CharField(max_length=255, choices= type_choices, null=True, blank=True)
+    type = models.CharField(max_length=255, choices=type_choices, null=True, blank=True)
 
     tags = models.CharField(max_length=255, null=True, blank=True)
     alias = models.CharField(max_length=255, null=True, blank=True)
@@ -178,8 +180,13 @@ class Task(models.Model):
                 'startDate': datetime.datetime.strptime(task.createdAt, '%Y-%m-%dT%H:%M:%S.%fZ'),
                 'date': datetime.datetime.now(),
                 'completed': task.completed}
-        if user_telegram_id != '':
+
+        if user_telegram_id:
+            if isinstance(user_telegram_id, str):
+                user_telegram_id = User.objects.filter(user_id=user_telegram_id).first()
             data['user_telegram_id'] = user_telegram_id
+        else:
+            data['user_telegram_id'] = Task.objects.filter(id=task.id).first().user_telegram_id
 
         task, created = cls.objects.update_or_create(id=data['id'], defaults=data)
         return task, created
@@ -189,3 +196,31 @@ class Task(models.Model):
     def task_get(cls, task_number):
         task = cls.objects.get(task_number=task_number)
         return task
+
+
+class Anime(models.Model):
+    id = models.IntegerField(primary_key=True)
+    name = models.CharField(max_length=255, null=True, blank=True)
+    russian = models.CharField(max_length=255, null=True, blank=True)
+    url = models.CharField(max_length=255, null=True, blank=True)
+    score = models .FloatField(null=True, blank=True)
+
+
+class Pickup(models.Model):
+    text = models.CharField(max_length=255)
+
+
+class Requests(models.Model):
+    ip_addr = models.CharField(max_length=255)
+    date = models.DateTimeField()
+
+
+class ChatAnswers(models.Model):
+    request = models.CharField(max_length=255, null=True, blank=True)
+    answer = models.CharField(max_length=255,  null=True, blank=True)
+
+
+class Questions(models.Model):
+    cnt = models.IntegerField(null=True, blank=True)
+    question = models.CharField(max_length=255,  null=True, blank=True)
+    answer = models.CharField(max_length=255,  null=True, blank=True)

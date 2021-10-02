@@ -30,6 +30,7 @@ urlpatterns = [
     path('krasa_winner/', tgviews.Egor.index),
     path('guess/', tgviews.Egor.guess),
     path('passgen/', tgviews.Egor.passgen),
+    path('chat/', tgviews.chat),
     path('api/', include('telegram_bot.api.urls')),
     path(config.TG_API_KEY + '/', tgviews.tg),
     path('', tgviews.index, name="index"),

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" autoUpload="Always" serverName="root@jestenok.ru:22" remoteFilesAllowedToDisappearOnAutoupload="false">
+  <component name="PublishConfigData" autoUpload="Always" serverName="root@jestenok.ru:22" remoteFilesAllowedToDisappearOnAutoupload="false" showDialogOnRemoteDnD="false">
     <serverData>
       <paths name="root@jestenok.ru:22">
         <serverdata>
           <mappings>
-            <mapping deploy="/home/django-telegram-habitica" local="$PROJECT_DIR$" />
+            <mapping deploy="/home/manager" local="$PROJECT_DIR$" />
           </mappings>
         </serverdata>
       </paths>

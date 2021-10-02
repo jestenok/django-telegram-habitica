@@ -13,8 +13,8 @@ def anime_headers(token = ""):
     return headers
 
 
-def search(u, text = "", planned = False, retry = True):
-    params = {"q":f"{text}"}
+def search(u, text="", planned=False, retry=True):
+    params = {"q": f"{text}"}
     if planned:
         params["mylist"] = "planned"
         params["limit"] = "50"

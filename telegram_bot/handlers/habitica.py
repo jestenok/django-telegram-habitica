@@ -17,11 +17,11 @@ def get_object_from_request(json_data):
     return obj
 
 
-def task_create(user_telegram_id, username, text, notes=''):
+def task_create(user_telegram, username, text, notes=''):
     data = {'text': f'{username} # {text}', 'notes': notes, 'type': 'todo'}
     r = requests.post(url='https://habitica.com/api/v3/tasks/user', headers=headers, data=data)
     task = get_object_from_request(r.json())
-    return Task.task_update_or_create(task.data, user_telegram_id)
+    return Task.task_update_or_create(task.data, user_telegram)
 
 
 def task_update(task):
@@ -33,5 +33,3 @@ def task_compleeted(json_data):
     task = namedtuple("ObjectName", json_data['task'].keys())(*json_data['task'].values())
     task_db, _ = Task.task_update_or_create(task)
     habitica_task_compleeted(task_db)
-
-
