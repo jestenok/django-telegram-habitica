@@ -8,6 +8,6 @@ from ..handlers.anime import search
 
 class TaskViewSet(viewsets.ModelViewSet):
 
-    queryset = Task.objects.filter(completed=False)
+    queryset = Task.objects.filter()
     serializer_class = TaskSerializer
 

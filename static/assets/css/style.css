@@ -128,13 +128,10 @@ h1, h2, h3, h4, h5, h6 {
   right: 0;
   background: rgba(0, 0, 0, 0.9);
 }
-#header.header-top .social-links, #header.header-top h2 {
+#header.header-top .social-links, #header.header-top h2, #header.header-top h1 {
   display: none;
 }
-#header.header-top h1 {
-  margin-right: auto;
-  font-size: 36px;
-}
+
 #header.header-top .container {
   display: flex;
   align-items: center;
@@ -159,7 +156,7 @@ h1, h2, h3, h4, h5, h6 {
 */
 .navbar {
   padding: 0;
-  margin-top: 35px;
+  margin-top: 25px;
 }
 .navbar ul {
   margin: 0;
@@ -303,7 +300,7 @@ section .container {
     top: 120px;
   }
   section.section-show {
-    top: 80px;
+    top: 65px;
   }
 }
 
@@ -593,15 +590,15 @@ section .container {
 }
 
 /*--------------------------------------------------------------
-# Services
+# projects
 --------------------------------------------------------------*/
-.services .icon-box {
+.projects .icon-box {
   text-align: center;
   background: rgba(204, 204, 204, 0.1);
   padding: 80px 20px;
   transition: all ease-in-out 0.3s;
 }
-.services .icon-box .icon {
+.projects .icon-box .icon {
   margin: 0 auto;
   width: 64px;
   height: 64px;
@@ -614,11 +611,11 @@ section .container {
   margin-bottom: 20px;
   transform-style: preserve-3d;
 }
-.services .icon-box .icon i {
+.projects .icon-box .icon i {
   color: #fff;
   font-size: 28px;
 }
-.services .icon-box .icon::before {
+.projects .icon-box .icon::before {
   position: absolute;
   content: "";
   left: -8px;
@@ -630,33 +627,33 @@ section .container {
   transition: all 0.3s ease-out 0s;
   transform: translateZ(-1px);
 }
-.services .icon-box h4 {
+.projects .icon-box h4 {
   font-weight: 700;
   margin-bottom: 15px;
   font-size: 24px;
 }
-.services .icon-box h4 a {
+.projects .icon-box h4 a {
   color: #fff;
 }
-.services .icon-box p {
+.projects .icon-box p {
   line-height: 24px;
   font-size: 14px;
   margin-bottom: 0;
 }
-.services .icon-box:hover {
+.projects .icon-box:hover {
   background: #18d26e;
   border-color: #18d26e;
 }
-.services .icon-box:hover .icon {
+.projects .icon-box:hover .icon {
   background: #fff;
 }
-.services .icon-box:hover .icon i {
+.projects .icon-box:hover .icon i {
   color: #18d26e;
 }
-.services .icon-box:hover .icon::before {
+.projects .icon-box:hover .icon::before {
   background: #35e888;
 }
-.services .icon-box:hover h4 a, .services .icon-box:hover p {
+.projects .icon-box:hover h4 a, .projects .icon-box:hover p {
   color: #fff;
 }
 

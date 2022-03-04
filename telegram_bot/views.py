@@ -1,5 +1,5 @@
 import json
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from telegram_bot.handlers.manager1c import process_1c_event
@@ -14,17 +14,43 @@ import telegram
 import requests
 from manager.config import TG_API_KEY
 import socket
+from .forms import SendMessageForm
 from datetime import datetime
 
 
 def index(request):
     Requests.objects.create(ip_addr=get_client_ip(request), date=datetime.now())
-    return render(request, 'index.html')
+    form = SendMessageForm()
+    data = {
+        'form': form
+    }
+    return render(request, 'index.html', data)
 
 
+@csrf_exempt
 def chat(request):
-    chat(json.loads(request.body))
-    return JsonResponse({"ok": "POST request processed"})
+    if request.method == 'POST':
+        if all([DEBUG,
+                request.headers["host"] == "jestenok.ru",
+                socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect_ex(('jestenok.ru', 8888)) == 0]):
+            requests.post(f'http://jestenok.ru:8888/chat', data=request.body)
+        else:
+            form = SendMessageForm(request.POST)
+            if form.is_valid():
+                # captcha_score = form.cleaned_data['captcha'].get('score')
+                user_id = request.POST["user_id"] if "user_id" in request.POST else ""
+                text = "\n".join([f"{key}: {item}" for key, item in request.POST.items() if
+                                  key not in ['captcha', 'csrfmiddlewaretoken', 'g-recaptcha-response']])
+                bot_send_message(user_id=user_id, text=text)
+                return HttpResponse('OK')
+            else:
+                user_id = request.POST["user_id"] if "user_id" in request.POST else ""
+                text = "\n".join([f"{key}: {item}" for key, item in request.POST.items() if
+                                  key not in ['captcha', 'csrfmiddlewaretoken', 'g-recaptcha-response']]) + "\n<b>❌СООБЩЕНИЕ ОТ ХУЕСОСА❌</b>"
+                bot_send_message(user_id=user_id, text=text)
+                return HttpResponse('Пошел нахуй черт ебаный')
+
+    return HttpResponse('OK')
 
 
 @csrf_exempt
@@ -70,7 +96,6 @@ def anime(request):
 @csrf_exempt
 def msg(request):
     if request.method == "POST":
-        print(request.body)
         process_1c_event(json.loads(request.body))
         return JsonResponse({"200": "POST request processed"})
 

@@ -79,16 +79,17 @@ def get_tasks(update, context):
     update.message.reply_text(parser.parse())
 
 
-def bot_send_message(user_id, text):
+def bot_send_message(user_id="", text=""):
     if not user_id:
         user_id = '1021912706'
-    bot.send_message(user_id, text)
+    bot.send_message(user_id, text, parse_mode=telegram.ParseMode.HTML)
 
 
 def task(update, context):
     u = User.get_user(update, context)
     User.objects.filter(user_id=u.user_id).update(waiting_for_input=True)
     context.bot.send_message(chat_id=u.user_id, text='Введите описание задачи',
+                             parse_mode=telegram.ParseMode.HTML,
                              reply_markup=telegram.ReplyKeyboardMarkup([[telegram.KeyboardButton(text="/task")],],
                                                                        resize_keyboard=True))
 
@@ -239,5 +240,6 @@ def broadcast_command_with_message(update, context):
 
 def chat(data):
     pass
+
 
 bot = telegram.Bot(TG_API_KEY)
